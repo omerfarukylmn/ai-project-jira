@@ -1,0 +1,86 @@
+{% extends 'notes/base.html' %}
+
+{% block title %}Yeni Not | NotePilot{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-card {
+        padding: 34px;
+        max-width: 920px;
+        margin: 0 auto;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        margin-top: 24px;
+    }
+
+    .field-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 800;
+    }
+
+    .helper-box {
+        margin-top: 28px;
+        padding: 18px;
+        border-radius: 18px;
+        background: #f8fafc;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        line-height: 1.7;
+    }
+
+    .actions {
+        margin-top: 24px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="card form-card">
+    <h1 class="page-title">Yeni Not Oluştur</h1>
+    <p class="page-subtitle">
+        Başlık, içerik ve isteğe bağlı olarak özet ile etiket alanlarını doldurarak yeni bir not ekleyebilirsin.
+        Daha sonra bu not için yapay zekâ ile otomatik özet üretebilirsin.
+    </p>
+
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+
+        <div class="field-group">
+            <label for="{{ form.title.id_for_label }}">Başlık</label>
+            {{ form.title }}
+        </div>
+
+        <div class="field-group">
+            <label for="{{ form.content.id_for_label }}">İçerik</label>
+            {{ form.content }}
+        </div>
+
+        <div class="field-group">
+            <label for="{{ form.summary.id_for_label }}">Özet</label>
+            {{ form.summary }}
+        </div>
+
+        <div class="field-group">
+            <label for="{{ form.tags.id_for_label }}">Etiketler</label>
+            {{ form.tags }}
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">Notu Kaydet</button>
+            <a href="{% url 'home' %}" class="btn btn-light">Vazgeç</a>
+        </div>
+    </form>
+
+    <div class="helper-box">
+        <strong>İpucu:</strong> İçeriği ayrıntılı girersen, yapay zekâ daha kaliteli bir özet oluşturur.
+    </div>
+</section>
+{% endblock %}

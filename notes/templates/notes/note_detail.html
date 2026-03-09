@@ -1,0 +1,108 @@
+{% extends 'notes/base.html' %}
+
+{% block title %}{{ note.title }} | NotePilot{% endblock %}
+
+{% block extra_css %}
+<style>
+    .detail-layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 22px;
+    }
+
+    .main-card, .side-card {
+        padding: 30px;
+    }
+
+    .meta-line {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .content-box, .summary-box {
+        margin-top: 24px;
+        padding: 20px;
+        border-radius: 18px;
+        background: #f8fafc;
+        border: 1px solid var(--border);
+    }
+
+    .content-box p, .summary-box p {
+        margin: 0;
+        line-height: 1.9;
+        white-space: pre-line;
+        color: #334155;
+    }
+
+    .action-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 18px;
+    }
+
+    .info-box {
+        margin-top: 20px;
+        padding: 16px;
+        border-radius: 16px;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1e3a8a;
+        line-height: 1.7;
+        font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+        .detail-layout {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="detail-layout">
+    <div class="card main-card">
+        {% if note.tags %}
+            <span class="tag">{{ note.tags }}</span>
+        {% endif %}
+
+        <h1 class="page-title" style="margin-top:14px;">{{ note.title }}</h1>
+
+        <div class="meta-line">
+            Oluşturulma: {{ note.created_at|date:"d.m.Y H:i" }}<br>
+            Güncellenme: {{ note.updated_at|date:"d.m.Y H:i" }}
+        </div>
+
+        <div class="content-box">
+            <h3 class="section-title">Not İçeriği</h3>
+            <p>{{ note.content }}</p>
+        </div>
+
+        <div class="summary-box">
+            <h3 class="section-title">Yapay Zekâ Özeti</h3>
+            <p>{{ note.summary|default:"Bu not için henüz özet oluşturulmadı." }}</p>
+        </div>
+    </div>
+
+    <div class="card side-card">
+        <h3 class="section-title">İşlemler</h3>
+        <p class="page-subtitle">
+            Bu not üzerinde hızlı işlemler gerçekleştirebilirsin.
+        </p>
+
+        <div class="action-list">
+            <a href="{% url 'ai-summary' note.id %}" class="btn btn-success">AI ile Özet Oluştur</a>
+            <a href="{% url 'ai-tags' note.id %}" class="btn btn-dark">AI ile Etiket Üret</a>
+            <a href="{% url 'home' %}" class="btn btn-light">Ana Sayfaya Dön</a>
+            <a href="{% url 'note-create' %}" class="btn btn-primary">Yeni Not Oluştur</a>
+        </div>
+
+        <div class="info-box">
+            Bu projede özetleme işlemi, ücretli API yerine yerel olarak çalışan Ollama modeli ile yapılmaktadır.
+        </div>
+    </div>
+</section>
+{% endblock %}
