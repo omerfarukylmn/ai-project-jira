@@ -19,6 +19,6 @@ class NoteForm(forms.ModelForm):
                 'rows': 4
             }),
             'tags': forms.TextInput(attrs={
-                'placeholder': 'Örn: django, yapay zekâ, proje'
+                'placeholder': 'Örn: django, yapay zekâ, proj'
             }),
         }
