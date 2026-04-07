@@ -88,30 +88,3 @@ def note_detail(request, note_id):
     return render(request, 'notes/note_detail.html', {'note': note})
 from django.http import JsonResponse
 
-def ai_generate_summary(request, note_id):
-    note = get_object_or_404(Note, id=note_id)
-
-    summary = generate_summary(note.content)
-
-    if summary.startswith("Özet oluşturulurken hata oluştu"):
-        messages.error(request, "Özet oluşturulurken bir hata oluştu.")
-    else:
-        note.summary = summary
-        note.save()
-        messages.success(request, "Özet başarıyla oluşturuldu.")
-
-    return redirect('note-detail', note_id=note.id)
-
-def ai_generate_tags(request, note_id):
-    note = get_object_or_404(Note, id=note_id)
-
-    tags = generate_tags(note.content)
-
-    if tags.startswith("Etiket oluşturulurken hata oluştu"):
-        messages.error(request, "Etiket oluşturulurken bir hata oluştu.")
-    else:
-        note.tags = tags.strip()
-        note.save()
-        messages.success(request, "Etiketler başarıyla oluşturuldu.")
-
-    return redirect('note-detail', note_id=note.id)
