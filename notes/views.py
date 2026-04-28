@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,7 +9,7 @@ from .forms import NoteForm
 from .repositories import NoteRepository
 from .serializers import NoteSerializer
 from .ai_service import generate_summary, generate_tags
-from django.contrib import messages
+
 
 class NoteListCreateAPIView(APIView):
     def get(self, request):
@@ -76,6 +77,7 @@ def note_create(request):
         form = NoteForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "Not başarıyla oluşturuldu.")
             return redirect('home')
     else:
         form = NoteForm()
@@ -86,5 +88,33 @@ def note_create(request):
 def note_detail(request, note_id):
     note = get_object_or_404(Note, id=note_id)
     return render(request, 'notes/note_detail.html', {'note': note})
-from django.http import JsonResponse
 
+
+def ai_generate_summary(request, note_id):
+    note = get_object_or_404(Note, id=note_id)
+
+    summary = generate_summary(note.content)
+
+    if summary.startswith("Özet oluşturulurken hata oluştu"):
+        messages.error(request, "Özet oluşturulurken bir hata oluştu.")
+    else:
+        note.summary = summary
+        note.save()
+        messages.success(request, "Özet başarıyla oluşturuldu.")
+
+    return redirect('note-detail', note_id=note.id)
+
+
+def ai_generate_tags(request, note_id):
+    note = get_object_or_404(Note, id=note_id)
+
+    tags = generate_tags(note.content)
+
+    if tags.startswith("Etiket oluşturulurken hata oluştu"):
+        messages.error(request, "Etiket oluşturulurken hata oluştu.")
+    else:
+        note.tags = tags
+        note.save()
+        messages.success(request, "Etiketler başarıyla oluşturuldu.")
+
+    return redirect('note-detail', note_id=note.id)
