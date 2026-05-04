@@ -1,2 +1,2 @@
 # NotePilot
-git integration for jira
+git integration for jira (kanbas)
