@@ -1,4 +1,4 @@
-##import
+##import library
 from rest_framework import serializers
 from .models import Note
 
