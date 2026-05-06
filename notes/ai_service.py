@@ -1,10 +1,11 @@
 import requests
 
+# Ollama API yapılandırması
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL_NAME = "gemma3"
 
-
 def _call_ollama(prompt):
+    """Ollama API'sine istek gönderen yardımcı fonksiyon."""
     response = requests.post(
         OLLAMA_URL,
         json={
@@ -14,12 +15,12 @@ def _call_ollama(prompt):
         },
         timeout=120,
     )
-    response.raise_for_status()
+    response.raise_for_status() # Hata varsa istisna fırlatır
     data = response.json()
     return data.get("response", "")
 
-
 def generate_summary(text):
+    """Verilen metni Türkçe olarak özetler."""
     prompt = f"""
 Aşağıdaki metni kısa, açık ve anlaşılır şekilde Türkçe özetle.
 
@@ -35,8 +36,8 @@ Metin:
     except Exception as e:
         return f"Özet oluşturulurken hata oluştu: {str(e)}"
 
-
 def generate_tags(text):
+    """Metinle ilgili 4-6 adet Türkçe etiket (tag) üretir."""
     prompt = f"""
 Aşağıdaki metin için en uygun 4 ila 6 kısa etiketi Türkçe olarak üret.
 
